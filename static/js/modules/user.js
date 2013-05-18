@@ -18,10 +18,28 @@
     model: User.Model
   });
   
+ 
+  // Shorthands 
+  // The application container
+  var app = pepper.app; 
+  
+  User.NameplateWidget = Backbone.View.extend({
+    el: "#Nameplate",
+    
+    render: function(){
+      if (app.current_user){
+        _data = {
+          avatar_src: app.current_user.avatar_src,
+          user_name: app.current_user.name
+        }
+        $(this.el).html(ich.nameplateWidget(_data));
+      }else{
+        $(this.el).html(ich.nameplateWidgetLogout());
+      }
+    }
+  });
+  
   
  
- // Shorthands 
- // The application container
- var app = pepper.app;
  
 })(pepper, pepper.module("user"));

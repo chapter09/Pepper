@@ -2,6 +2,7 @@
 {% block script %}
 <script src="js/desktop.js" type="text/javascript" charset="utf-8"></script>
 
+<!-- pages template-->
 <script id="welcomePage" type="text/html" charset="utf-8">
 {% include "pages.desktop/welcome_page.html" %}
 </script>
@@ -23,5 +24,33 @@
 <script id="authorViewPage" type="text/html" charset="utf-8">
 	<h1>author view page</h1>
 </script>
+
+<!-- ends pages template-->
+
+<!-- widgets template-->
+<script id="navigatorWidget" type="text/html" charset="utf-8">
+{% include "widgets.desktop/navigator_widget.html" %}
+</script>
+
+<script id="nameplateWidget" type="text/html" charset="utf-8">
+{% include "widgets.desktop/nameplate_widget.html" %}
+</script>
+
+<script id="nameplateWidgetLogout" type="text/html" charset="utf-8">
+{% include "widgets.desktop/nameplate_widget_logout.html" %}
+</script>
+<!-- ends template-->
+
+
+
+{% endblock %}
+
+
+{% block body %}
+
+<div id="navigator"></div>
+
+<div id="main-container"></div>
+
 {% endblock %}
 
