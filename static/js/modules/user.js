@@ -38,7 +38,79 @@
       }
     }
   });
+
+/***  User View  ***/
+
+  User.View = Backbone.View.extend({
+    initialize: function() {
+    },
+
+    render: function() {
+      _data {
+        name: this.model.get('name'),
+        
+      };
+
+      papers = new Paper.List(this.model.get('papers'));
+
+      papersView = new Paper.ListView({
+        el: '#papersView .list',
+        collection = papers
+      });
+
+
+      papersView.render();
+
+
+
+      $(this.el).html(ich.userViewPage(_data));
+    }
+
+
+  });
+
+  /***  User PreViewPage  ***/
+
+
+  User.PreViewPage = Backbone.View.extend({
+
+    render: function(){
+
+    }
+  });
+
+
+  User.Router = Backbone.Router.extend({
+   initialize: function(){
+      this.pre_view_page = new User.PreViewPage();
+      this.user_view_page = new User.View();
+      this.dashboard_page = new User.View();
+    },
   
+  routes: {
+      "user/:user_id": "user",
+      "dashboard": "dashboard"
+    },
+
+    user: function(user_id) {
+        model = new User.Model({
+          _id: user_id
+        });
+
+        $('#loading-animation').show();
+
+        model.fetch({success:function(){
+
+          user_view_page = new User.View({
+            model: model
+          });
+
+          $('#loading-animation').hide();
+          user_view_page.render();
+
+        }});
+    }
+
   
  
  
