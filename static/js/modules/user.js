@@ -46,8 +46,8 @@
     },
 
     render: function() {
-      _data {
-        name: this.model.get('name'),
+      _data = {
+        name: this.model.get('name')
         
       };
 
@@ -55,7 +55,7 @@
 
       papersView = new Paper.ListView({
         el: '#papersView .list',
-        collection = papers
+        collection: papers
       });
 
 
@@ -110,6 +110,7 @@
 
         }});
     }
+  });
 
   
  
