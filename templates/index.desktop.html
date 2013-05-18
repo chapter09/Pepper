@@ -13,7 +13,7 @@
 <script id="phonePage" type="text/html" charset="utf-8">
 {% include "pages.desktop/phone_page.html" %}
 </script>
-<script id="dashboardPage" type="text/html" charset="utf-8">
+<script id="userViewPage" type="text/html" charset="utf-8">
 {% include "pages.desktop/user_dashboard.html" %}
 </script>
 <script id="recipeViewPage" type="text/html" charset="utf-8">
@@ -25,6 +25,10 @@
 <script id="authorViewPage" type="text/html" charset="utf-8">
 	<h1>author view page</h1>
 </script>
+<script id="userPreViewPage" type="text/html" charset="utf-8">
+{% include "pages.desktop/user_preview_page.html" %}
+</script>
+
 
 <!-- ends pages template-->
 
@@ -40,11 +44,24 @@
 <script id="nameplateWidgetLogout" type="text/html" charset="utf-8">
 {% include "widgets.desktop/nameplate_widget_logout.html" %}
 </script>
+
 <!-- ends template-->
 
 <!-- common components -->
 <script id="commonListItem" type="text/html" charset="utf-8">
 {% include "components.desktop/common_list_item_component.html" %}
+</script>
+
+<script id="commonList" type="text/html" charset="utf-8">
+{% include "components.desktop/common_list_component.html" %}
+</script>
+
+<script id="recipeListItem" type="text/html" charset="utf-8">
+{% include "components.desktop/recipe_list_item_component.html" %}
+</script>
+
+<script id="recipeList" type="text/html" charset="utf-8">
+{% include "components.desktop/recipe_list_component.html" %}
 </script>
 <!-- end common components -->
 
@@ -55,9 +72,26 @@
 
 {% block body %}
 
-<div id="navigator"></div>
+<div id="navigator">
+  <div class="wrapper navigator-wrapper">
+    <div id="logo" class="logo logo-img"></div>
+
+    <form action="#search" method="get" accept-charset="utf-8" id="search">
+      <div class="wrapper search-wrapper">
+        <input type="text" name="search" placeholder="Search here.." id="search">  
+      </div>
+      <a href="#search" method="get" class="search-icon"></a>
+    </form>
+
+
+    <div id="nameplate">
+    </div>
+  </div>
+</div>
 
 <div id="main-container"></div>
+
+<div id="loading-anmiation" class="hidden"></div>
 
 <div id="footer">
   <div class="wrapper footer-wrapper">

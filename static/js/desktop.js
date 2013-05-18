@@ -19,7 +19,14 @@ var pepper = {
   }(),
   
   app: {
-    current_user: null
+    current_user: null,
+    widgets: [],
+    
+    render_widgets: function(){
+      for (var i=0; i < this.widgets.length; i++) {
+        this.widgets[i].render();
+      };
+    }
   }
 };
 
@@ -28,6 +35,8 @@ var pepper = {
 $(document).ready(function(){
   
   var pagesRouter = new (pepper.module("pages").Router)();
+  var userRouter = new (pepper.module('user').Router)();
+  
   Backbone.history.start();
   
 });

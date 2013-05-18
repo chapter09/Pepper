@@ -29,19 +29,6 @@
      }
    });
 
-  // Navigator widget
-  Pages.NavigatorWidget = Backbone.View.extend({
-    el: '#navigator',
-    _renderd: false,
-    
-    render: function(){
-      if (!this._renderd){
-        this._renderd = true;
-        $(this.el).html(ich.navigatorWidget());
-      }
-    }
-  });
-
   // Shorthands 
   // The application container
   var app = pepper.app;
@@ -52,8 +39,8 @@
       this.welcomePage = new Pages.WelcomePage();
       this.explorePage = new Pages.ExplorePage();
       this.phonePage = new  Pages.PhonePage ();
-      this.navigatorWidet = new Pages.NavigatorWidget();
-      this.nameplateWidget = new User.NameplateWidget();
+      
+      app.widgets.push(new User.NameplateWidget());
     },
 
     routes: {
@@ -63,20 +50,17 @@
     },
 
     index: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.welcomePage.render();
     },
 
     explore: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.explorePage.render();
     },
 
     phone: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.phonePage.render();
     }
   });
