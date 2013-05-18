@@ -16,28 +16,14 @@ var pepper = {
       // Create a module and save it under this name
       return modules[name] = { Views: {} };
     };
-  }(),
-  
-  Router: Backbone.Router.extend({
-     initialize: function(){
-       this.welcomePage = new (pepper.module("pages").WelcomePage)();
-     },
-
-     routes: {
-       "": "index"
-     },
-
-     index: function(){
-       this.welcomePage.render();
-     }
-   })
+  }()
 };
 
 
 
 $(document).ready(function(){
   
-  var app = new pepper.Router();
+  var pagesRouter = new (pepper.module("pages").Router)();
   Backbone.history.start();
   
 });
