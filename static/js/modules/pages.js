@@ -40,7 +40,7 @@
         $(this.el).html(ich.navigatorWidget());
       }
     }
-  })
+  });
 
   // Shorthands 
   // The application container

@@ -70,6 +70,31 @@ body {
 
 
 /************************************/
+/*         Footer Page              */
+/************************************/
+
+#footer {
+  height: 70px;
+  background-image: url('/img/soft_key_bar.png');
+  background-repeat: repeat-x;
+}
+
+#footer .footer-wrapper{
+  margin: 0 auto;
+  width: 480px;
+  text-align: center;
+  
+}
+
+#footer .footer-wrapper p{
+  color: #ccc;
+  padding: 18px;
+  font-family: serif;
+  font-size: 16px;
+}
+
+
+/************************************/
 /*          Welcome Page            */
 /************************************/
 
@@ -209,3 +234,7 @@ body {
   margin-bottom: 10px;
   border-bottom: 2px solid #ccc;
 }
+
+
+
+
