@@ -427,6 +427,34 @@ class RankHandler(tornado.web.RequestHandler):
         raise tornado.web.HTTPError(400)
     
 
+
+class SearchHandler(tornado.web.RequestHandler):
+  def get(self):
+    keywords = self.get_argument('keywords')
+    page = int(self.get_argument('page', '0'))
+    limit = int(self.get_argument('limit', '25'))
+    type = self.get_argument('type', 'all')
+
+    keywords = re.sub(r'\s+', ' ', keywords.replace('+', ' ')).lower().strip().split()
+   
+    data = {}
+
+    if type == 'recipe' or type == 'all':
+      data['recipes'] = list(db.resipes.find({'_keywords': {'$all': keywords}})\
+                                       .skip(page*limit).limit(limit))
+
+    if type == 'papers' or type == 'all':
+      data['papers'] = list(db.papers.find({'_keywords': {'$all': keywords}})\
+                                     .skip(page*limit).limit(limit))
+    self.content_type = 'application/json'
+    enc = CustomEncoder()
+
+    self.finish(enc.encode(data))
+       
+    
+
+
+
 def createSampleDb():
   from data import data
   _rs = []
@@ -463,6 +491,7 @@ application = tornado.web.Application([
     (r"/papers/(\w+)", PaperHandler),
     (r"/ranks", RanksCollectionHandler),
     (r"/ranks/(\w+)", RankHandler),
+    (r'/search', SearchHandler),
     (r"/(.+)", tornado.web.StaticFileHandler,\
         dict(path=settings['static_path'])),
 ], **settings)
