@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block script %}
+<script src="js/desktop.js" type="text/javascript" charset="utf-8"></script>
+
+<script id="welcomePage" type="text/html" charset="utf-8">
+{% include "pages.desktop/welcome_page.html" %}
+</script>
+<script id="explorePage" type="text/html" charset="utf-8">
+{% include "pages.desktop/explore_page.html" %}
+</script>
+<script id="phonePage" type="text/html" charset="utf-8">
+{% include "pages.desktop/phone_page.html" %}
+</script>
+<script id="dashboardPage" type="text/html" charset="utf-8">
+{% include "pages.desktop/user_dashboard.html" %}
+</script>
+<script id="recipeViewPage" type="text/html" charset="utf-8">
+	<h1>recipe view page</h1>
+</script>
+<script id="paperViewPage" type="text/html" charset="utf-8">
+	<h1>paper view page</h1>
+</script>
+<script id="authorViewPage" type="text/html" charset="utf-8">
+	<h1>author view page</h1>
+</script>
+{% endblock %}
+
