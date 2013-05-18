@@ -196,9 +196,16 @@ body {
   top: 0;
 }
 
+.info-wrapper ul {
+  padding-left: 10px;
+  padding-right: 40px;
+}
 
 .info-wrapper li{
-  height: 40px;
+  height: 30px;
   font-size: 18px;
   list-style: none;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ccc;
 }
