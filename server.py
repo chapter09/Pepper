@@ -124,25 +124,24 @@ class RecipesCollectionHandler(tornado.web.RequestHandler):
     enc = CustomEncoder()
     _rs = []
     for _r in _recipes:
-      _r["_ts"] = int(_r["datetime"].strftime("%s"))
-      _rs.append(_e)
+      _r["ts"] = int(_r["datetime"].strftime("%s"))
+      _rs.append(_r)
      
     if order=="desc": _rs.reverse()
     self.finish(json.dumps(enc.encode(_rs)))
 
 
 #recipe["_rid"] : recipe id
-#recipe["_pl"] : paper list 
+#recipe["pl"] : paper list 
 #recipe["_uid"] : owner id
-#recipe["_fl"] : fork list
-#recipe["_wl"] : watch list
-#recipe["_ts"] : time stamp
+#recipe["fl"] : fork list
+#recipe["wl"] : watch list
+#recipe["ts"] : time stamp
 #recipe["datetime"] : time string
 class RecipeHandler(tornado.web.RequestHandler):
   def get(self, id):
     recipes = db.recipes
     try:
-
       _id = bson.objectid.ObjectId(id)
     except pymongo.errors.InvalidId:
       raise tornado.web.HTTPError(400)
@@ -151,9 +150,9 @@ class RecipeHandler(tornado.web.RequestHandler):
     if recipe:
       self.content_type = 'application/json'
       enc = CustomEncoder()
-      recipe["_ts"] = int(_r["datetime"].strftime("%s"))
+      recipe["ts"] = int(_r["datetime"].strftime("%s"))
 
-      self.finish(enc.encode(event))
+      self.finish(enc.encode(recipe))
     else:
       raise tornado.web.HTTPError(404)
 
@@ -161,7 +160,6 @@ class RecipeHandler(tornado.web.RequestHandler):
     recipes = db.recipes
     self.write(json.dumps(id))
     try:
-
       _id = bson.objectid.ObjectId(id)
     except pymongo.errors.InvalidId:
       raise tornado.web.HTTPError(400)
@@ -170,9 +168,9 @@ class RecipeHandler(tornado.web.RequestHandler):
     if recipe:
       #update
       update = {}
-      update['_pl'] = self.get_argument('pl', '')
-      update['_fl'] = self.get_argument('fl', '')
-      update['_wl'] = self.get_argument('wl', '')
+      update['pl'] = self.get_argument('pl', '')
+      update['fl'] = self.get_argument('fl', '')
+      update['wl'] = self.get_argument('wl', '')
       recipes.update({'_id': _id}, {"$set": update})
       
     else:
@@ -202,6 +200,15 @@ class RecipeHandler(tornado.web.RequestHandler):
       self.write(message)
 
 
+
+#user["_uid"] : user id
+#user["un"] : user name
+#user["cl"] : user's comments list 
+#user["rkl"] : user's ranks list 
+#user["rl"] : user's recipes list 
+#recipe["wl"] : user's watch list
+#recipe["ts"] : time stamp
+#recipe["datetime"] : time string
 class UserHandler(tornado.web.RequestHandler):
   def get(self, id):
     users = db.users
@@ -214,27 +221,27 @@ class UserHandler(tornado.web.RequestHandler):
     user = users.find_one({'_id': _id})
     if user:
       self.content_type = 'application/json'
+      enc = CustomEncoder()
+      self.finish(enc.encode(user))
+    else:
+      raise tornado.web.HTTPError(404)
 
 class AuthorHandler(tornado.web.RequestHandler):
   def get(self, id):
-    users = db.users
+    authors = db.authors
     try:
-
       _id = bson.objectid.ObjectId(id)
     except pymongo.errors.InvalidId:
       raise tornado.web.HTTPError(400)
 
-    user = users.find_one({'_id': _id})
-    if user:
+    author = authors.find_one({'_id': _id})
+    if author:
       self.content_type = 'application/json'
+      enc = CustomEncoder()
+      self.finish(enc.encode(author))
+    else:
+      raise tornado.web.HTTPError(404)
 
-class CommentsCollectionHandler(tornado.web.RequestHandler):
-  def get(self):
-    pass
-
-class CommentHandler(tornado.web.RequestHandler):
-  def get(self, id):
-    pass
 
 class PapersCollectionHandler(tornado.web.RequestHandler):
   def get(self):
@@ -245,7 +252,6 @@ class PaperHandler(tornado.web.RequestHandler):
   def get(self, id):
     papers = db.papers
     try:
-
       _id = bson.objectid.ObjectId(id)
     except pymongo.errors.InvalidId:
       raise tornado.web.HTTPError(400)
@@ -260,12 +266,107 @@ class PaperHandler(tornado.web.RequestHandler):
       raise tornado.web.HTTPError(404)
       
 
+class CommentsCollectionHandler(tornado.web.RequestHandler):
+  def get(self):
+    comments = db.comments
+    gt = int(self.get_argument("gt", "0"))
+    lt = int(self.get_argument("lt", "0"))
+    sk = int(self.get_argument("sk", "0"))
+    lmt = int(self.get_argument("lmt", "10"))
+    order = self.get_argument('order', 'asc')
+
+    _q = {} 
+    if gt:
+      gtd = datetime.datetime.fromtimestamp(gt)
+      _q.update({"$gt": gtd})
+    if lt:
+      ltd = datetime.datetime.fromtimestamp(lt)
+      _q.update({"$lt": ltd})
+
+    _comments = comment.find({"datetime": _q}) if _q else commnets.find()
+    _comments = _commentss.sort([("datetime", \
+        pymongo.DESCENDING)]).skip(sk).limit(lmt)
+    self.content_type = 'application/json'
+
+    enc = CustomEncoder()
+    _cs = []
+    for _c in _comments:
+      _c["ts"] = int(_c["datetime"].strftime("%s"))
+      _cs.append(_c)
+     
+    if order=="desc": _cs.reverse()
+    self.finish(json.dumps(enc.encode(_cs)))
+
+#comment["_id"] : comment id
+#comment["ctnt"] : comment id
+#comment["_uid"] : comment owner id
+#comment["_pid"] : paper commented id
+class CommentHandler(tornado.web.RequestHandler):
+  def get(self, id):
+    comments = db.comments
+    recipes = db.recipes
+    try:
+      _id = bson.objectid.ObjectId(id)
+    except pymongo.errors.InvalidId:
+      raise tornado.web.HTTPError(400)
+
+    comment = comments.find_one({'_id': _id})
+  
+
+  def post(self):
+    comments = db.comments
+    
+    _pl = self.get_argument('pl', '')
+    _comment={}
+    _recipe["_uid"] = self.get_argument('uid', 'default')
+    _recipe["datetime"] = dateime.datetime.utcnow()
+
+    _id = recipes.insert(_recipe)
+    if not _id:
+      raise tornado.web.HTTPError(400)
+    pass
+  
+  def delete(self, id):
+    pass
+
+
 class RanksCollectionHandler(tornado.web.RequestHandler):
   def get(self):
-    pass
+    ranks = db.ranks
+    gt = int(self.get_argument("gt", "0"))
+    lt = int(self.get_argument("lt", "0"))
+    sk = int(self.get_argument("sk", "0"))
+    lmt = int(self.get_argument("lmt", "10"))
+    order = self.get_argument('order', 'asc')
+
+    _q = {} 
+    if gt:
+      gtd = datetime.datetime.fromtimestamp(gt)
+      _q.update({"$gt": gtd})
+    if lt:
+      ltd = datetime.datetime.fromtimestamp(lt)
+      _q.update({"$lt": ltd})
+
+    _ranks = rank.find({"datetime": _q}) if _q else ranks.find()
+    _ranks = _ranks.sort([("datetime", \
+        pymongo.DESCENDING)]).skip(sk).limit(lmt)
+    self.content_type = 'application/json'
+
+    enc = CustomEncoder()
+    _rks = []
+    for _rk in _ranks:
+      _rk["ts"] = int(_rk["datetime"].strftime("%s"))
+      _rks.append(_rk)
+     
+    if order=="desc": _rks.reverse()
+    self.finish(json.dumps(enc.encode(_rks)))
+
 
 class RankHandler(tornado.web.RequestHandler):
   def get(self, id):
+    pass
+
+  def post():
     pass
 
 def createSampleDb():
