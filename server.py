@@ -7,6 +7,8 @@ import json
 import bson
 import datetime
 import re
+from jinja2 import Environment
+from jinja2 import FileSystemLoader
 
 
 connection=pymongo.Connection('202.120.38.9',27017)
@@ -35,14 +37,12 @@ def mobileDetecotr(req):
 
 
 class MainHandler(tornado.web.RequestHandler):
-  def get(self):
+  def get(self): 
+    env = Environment(loader=FileSystemLoader('templates'))
     if mobileDetecotr(self.request):
-      _f = open(os.path.join(os.path.dirname(__file__), \
-          "release/index.html"), "rb")
-      self.write(_f.read())
-      _f.close()
+      self.finish("Phone!!!")
     else:
-      self.finish("you are desktop")
+      self.finish(env.get_template("index.desktop.html").render().encode("utf-8"))
 
 
 class RegisterHandler(tornado.web.RequestHandler):
@@ -59,7 +59,8 @@ class RegisterHandler(tornado.web.RequestHandler):
       user['pw'] = pw
       users.insert(user)       
       self.set_current_user(un)
-      self.redirect("create success")
+      #self.redirect("create success")
+      raise tornado.web.HTTPError(400)
   
   def set_current_user(self, user):
     if user:
@@ -73,29 +74,24 @@ class LoginHandler(tornado.web.RequestHandler):
     users = db.users
     un = self.get_argument('un', 'default')
     pw = self.get_argument('pw', 'default')
-    auth = self.check_permission(un, pw)
-    if auth:
-      self.set_current_user(un)
-      self.redirect(self.get_argument('next', u"/"))
-    else:
-      self.redirect(u"/auth/login/")
-
-  def check_permission(self, username, password):
     user = users.find_one({'un': un})
     if user:
       if password == user['pw']:
-        return True
-      else: 
-        return False
-    else: 
-      return False 
+        self.set_current_user(un)
+        self.redirect(self.get_argument('next', u"/"))
+      else:
+        raise tornado.web.HTTPError(400)
+        self.redirect(u"/register")
+    else:
+      raise tornado.web.HTTPError(400)
+      self.redirect(u"/register")
+
   
   def set_current_user(self, user):
     if user:
       self.set_secure_cookie("user", tornado.escape.json_encode(user))
     else:
       self.clear_cookie("user")
-
 
 
 class RecipesCollectionHandler(tornado.web.RequestHandler):
@@ -116,7 +112,7 @@ class RecipesCollectionHandler(tornado.web.RequestHandler):
       ltd = datetime.datetime.fromtimestamp(lt)
       _q.update({"$lt": ltd})
 
-    _recipes = recipe.find({"datetime": _q}) if _q else recipes.find()
+    _recipes = recipes.find({"datetime": _q}) if _q else recipes.find()
     _recipes = _recipes.sort([("datetime", \
         pymongo.DESCENDING)]).skip(sk).limit(lmt)
     self.content_type = 'application/json'
@@ -131,7 +127,7 @@ class RecipesCollectionHandler(tornado.web.RequestHandler):
     self.finish(json.dumps(enc.encode(_rs)))
 
 
-#recipe["_rid"] : recipe id
+#recipe["_id"] : recipe id
 #recipe["pl"] : paper list 
 #recipe["_uid"] : owner id
 #recipe["fl"] : fork list
@@ -201,7 +197,7 @@ class RecipeHandler(tornado.web.RequestHandler):
 
 
 
-#user["_uid"] : user id
+#user["_id"] : user id
 #user["un"] : user name
 #user["cl"] : user's comments list 
 #user["rkl"] : user's ranks list 
@@ -226,6 +222,9 @@ class UserHandler(tornado.web.RequestHandler):
     else:
       raise tornado.web.HTTPError(404)
 
+#author["_id"]: author id
+#author["pl"]: author papers list
+#author["rl"]: author recipes list
 class AuthorHandler(tornado.web.RequestHandler):
   def get(self, id):
     authors = db.authors
@@ -242,7 +241,10 @@ class AuthorHandler(tornado.web.RequestHandler):
     else:
       raise tornado.web.HTTPError(404)
 
-
+#paper["_id"]: paper id
+#paper["cl"]: paper comment list
+#paper["rkl"]: paper rank list
+#paper["rl"]: paper recipe list
 class PapersCollectionHandler(tornado.web.RequestHandler):
   def get(self):
     papers = db.papers
@@ -283,8 +285,8 @@ class CommentsCollectionHandler(tornado.web.RequestHandler):
       ltd = datetime.datetime.fromtimestamp(lt)
       _q.update({"$lt": ltd})
 
-    _comments = comment.find({"datetime": _q}) if _q else commnets.find()
-    _comments = _commentss.sort([("datetime", \
+    _comments = comments.find({"datetime": _q}) if _q else comments.find()
+    _comments = _comments.sort([("datetime", \
         pymongo.DESCENDING)]).skip(sk).limit(lmt)
     self.content_type = 'application/json'
 
@@ -316,18 +318,30 @@ class CommentHandler(tornado.web.RequestHandler):
   def post(self):
     comments = db.comments
     
-    _pl = self.get_argument('pl', '')
-    _comment={}
-    _recipe["_uid"] = self.get_argument('uid', 'default')
-    _recipe["datetime"] = dateime.datetime.utcnow()
+#    _pl = self.get_argument('pl', '')
+    _comment = {}
+    _comment["_uid"] = self.get_argument('_uid', '0')
+    _comment["ctnt"] = self.get_argument('ctnt', 'default')
+    _comment["_pid"] = self.get_argument('_pid', '0')
+    _comment["datetime"] = dateime.datetime.utcnow()
 
-    _id = recipes.insert(_recipe)
+    _id = comments.insert(_comment)
     if not _id:
       raise tornado.web.HTTPError(400)
-    pass
   
   def delete(self, id):
-    pass
+    comments = db.comments
+    try:
+      _id = bson.objectid.ObjectId(id)
+    except pymongo.errors.InvalidId:
+      raise tornado.web.HTTPError(400)
+    
+    comment = comments.find_one({'_id': _id})
+    if comment:
+      comments.remove({'_id': _id})
+    else:
+      message = 'Comments not existed'
+      self.write(message)
 
 
 class RanksCollectionHandler(tornado.web.RequestHandler):
@@ -361,13 +375,57 @@ class RanksCollectionHandler(tornado.web.RequestHandler):
     if order=="desc": _rks.reverse()
     self.finish(json.dumps(enc.encode(_rks)))
 
-
+#rank["_id"] : rank id
+#rank["lvl"] : rank id
+#rank["_uid"] : rank owner id
+#rank["_pid"] : paper ranked id
 class RankHandler(tornado.web.RequestHandler):
   def get(self, id):
-    pass
+    ranks = db.ranks
+    try:
+      _id = bson.objectid.ObjectId(id)
+    except pymongo.errors.InvalidId:
+      raise tornado.web.HTTPError(400)
 
-  def post():
-    pass
+    rank = ranks.find_one({'_id': _id})
+    if rank:
+      self.content_type = 'application/json'
+      enc = CustomEncoder()
+      rank["ts"] = int(_r["datetime"].strftime("%s"))
+
+      self.finish(enc.encode(rank))
+    else:
+      raise tornado.web.HTTPError(404)
+
+  def post(self, id):
+    ranks = db.ranks
+    self.write(json.dumps(id))
+    try:
+      _id = bson.objectid.ObjectId(id)
+    except pymongo.errors.InvalidId:
+      raise tornado.web.HTTPError(400)
+    rank = ranks.find_one({'_id': _id})
+
+    if rank:
+      #update
+      update = {}
+      update['lvl'] = self.get_argument('lvl', '2')
+      update['_uid'] = self.get_argument('_uid', '0')
+      update['_pid'] = self.get_argument('_pid', '0')
+      recipes.update({'_id': _id}, {"$set": update})
+      
+    else:
+      #create
+      _rank = {}
+      _rank["_uid"] = self.get_argument('uid', '0')
+      _rank['lvl'] = self.get_argument('lvl', '2')
+      _rank['_pid'] = self.get_argument('_pid', '0')
+      _recipe["datetime"] = dateime.datetime.utcnow()
+
+      _id = ranks.insert(_recipe)
+      if not _id:
+        raise tornado.web.HTTPError(400)
+    
 
 def createSampleDb():
   from data import data
@@ -385,7 +443,7 @@ def createSampleDb():
 
 
 settings = {
-    "static_path": os.path.join(os.path.dirname(__file__), "release"),
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
     "cookie_secret": "7IG1FyflRlC3GqtlUJNCe2FKqfPGlEMFmG1Q6dHFlVE=",
     "xsrf_cookies": False,
 }
