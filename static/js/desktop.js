@@ -16,7 +16,11 @@ var pepper = {
       // Create a module and save it under this name
       return modules[name] = { Views: {} };
     };
-  }()
+  }(),
+  
+  app: {
+    current_user: null
+  }
 };
 
 
