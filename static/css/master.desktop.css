@@ -5,7 +5,11 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+}
+
+#main-container{
+  overflow: auto;
+  position: relative;
 }
 
 
@@ -15,6 +19,222 @@ body {
 
 #navigator {
   top: 0;
-  height: 40px;
+  height: 82px;
+  background-image: url('/img/title_bar.png');
+  background-repeat: repeat-x;
+  margin-bottom: 10px;
+}
+
+#navigator .navigator-wrapper{
+  width: 1200px;
+  height: 82px;
+  position: relative;
+  margin: 0 auto;
+}
+
+#logo {
+  float:left;
+  background-image: url('/img/logo.png');
+  height: 82px;
+  width: 88px;
+}
+
+#search{
+  position: relative;
+  left: 35%;
+  width: 300px;
+  height: 45px;
+  top: 20%;
+}
+
+#navigator input{
+  width: 300px;
+  height: 45px;
+  font-size: 20px;
+  font-family: serif;
+  position: absolute;
+  top:0;
+  left:0;
+}
+
+#navigator .search-icon{
+  display: block;
+  background-image: url('/img/search.png');
+  padding: 22px;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  right: 0;
+  top:1px;
+}
+
+
+/************************************/
+/*         Footer Page              */
+/************************************/
+
+#footer {
+  height: 70px;
+  background-image: url('/img/soft_key_bar.png');
+  background-repeat: repeat-x;
+}
+
+#footer .footer-wrapper{
+  margin: 0 auto;
+  width: 480px;
+  text-align: center;
+  
+}
+
+#footer .footer-wrapper p{
+  color: #ccc;
+  padding: 18px;
+  font-family: serif;
+  font-size: 16px;
+}
+
+
+/************************************/
+/*          Welcome Page            */
+/************************************/
+
+.login-form-wrapper {
+  background-image: url('/img/pic.jpg');
+  background-repeat:no-repeat;
+  background-position:center;
+  
+  height: 350px;
+  margin: 0;
+}
+
+.login-form-wrapper form{
+  position: relative;
+  top: 7%;
+  margin: 0 auto 0 auto;
+  width: 400px;
+  background-color: rgba(255,255,255, 0.4);
+  
+  padding: 88px;
+}
+
+.login-form-wrapper input {
+  width: 250px;
+  height: 35px;
+  font-size: 20px;
+  font-family: serif;
+  
+  margin-bottom: 25px;
+  margin-left: 100px;
+  
+  border: 1px solid #ddd;
+}
+
+
+.login-form-wrapper .icon{
+  width: 1px;
+  height: 1px;
+  padding: 27px;
+  position :absolute;
+}
+
+.login-form-wrapper .username-icon{
+  background-image: url('/img/name.png');
+  left: 119px;
+  top: 79px;
+}
+
+.login-form-wrapper .password-icon{
+  background-image: url('/img/key.png');
+  left: 119px;
+  top: 145px;
+}
+
+.login-form-wrapper .btn{
+  position: absolute;
+  top: 230px;
+  display: block;
+  padding: 17px 43px;
+  color: white;
+  font-size: 20px;
+  font-family: serif;
+  text-decoration: none;
+  background-repeat: no-repeat;
+}
+
+.login-form-wrapper .login-btn{
+  left: 175px;
+  background-image: url('/img/box_bg.png');
+}
+
+.login-form-wrapper .register-btn{
+  left: 317px;
+  background-image: url('/img/box1_bg.png');
+}
+
+
+.info-wrapper {
+  width: 1200px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.info-wrapper .info-row{
+  float: left;
+  width: 28%;
+  padding: 10px 30px;
+}
+
+.info-wrapper .info-row-head{
+  font-size: 18px;
+  font-family: serif;
+  color: #999;
+  height: 50px;
+  width: 90%;
+  background-image: url('/img/bar_bg/middle.png');
+  background-repeat: repeat-x;
   position: relative;
 }
+
+.info-wrapper .info-row-head h2{
+  padding: 12px;
+  background-image: url('/img/bar_bg/pic.png');
+  padding-left: 45px;
+  background-repeat: no-repeat;
+}
+
+.info-wrapper .before-row-head{
+  background-image: url('/img/bar_bg/left.png');
+  display: block;
+  position: absolute;
+  height: 50px;
+  width: 1px;
+  left: 0;
+}
+
+.info-wrapper .after-row-head{
+  background-image: url('/img/bar_bg/right.png');
+  display: block;
+  position: absolute;
+  height: 50px;
+  width: 2px;
+  right: 0px;
+  top: 0;
+}
+
+.info-wrapper ul {
+  padding-left: 10px;
+  padding-right: 40px;
+}
+
+.info-wrapper li{
+  height: 30px;
+  font-size: 18px;
+  list-style: none;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #ccc;
+}
+
+
+
+
