@@ -7,6 +7,8 @@ import json
 import bson
 import datetime
 import re
+from jinja2 import Environment
+from jinja2 import FileSystemLoader
 
 
 connection=pymongo.Connection('202.120.38.9',27017)
@@ -35,14 +37,12 @@ def mobileDetecotr(req):
 
 
 class MainHandler(tornado.web.RequestHandler):
-  def get(self):
+  def get(self): 
+    env = Environment(loader=FileSystemLoader('templates'))
     if mobileDetecotr(self.request):
-      _f = open(os.path.join(os.path.dirname(__file__), \
-          "release/index.html"), "rb")
-      self.write(_f.read())
-      _f.close()
+      self.finish("Phone!!!")
     else:
-      self.finish("you are desktop")
+      self.finish(env.get_template("index.desktop.html").render().encode("utf-8"))
 
 
 class RegisterHandler(tornado.web.RequestHandler):
@@ -443,7 +443,7 @@ def createSampleDb():
 
 
 settings = {
-    "static_path": os.path.join(os.path.dirname(__file__), "release"),
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
     "cookie_secret": "7IG1FyflRlC3GqtlUJNCe2FKqfPGlEMFmG1Q6dHFlVE=",
     "xsrf_cookies": False,
 }
