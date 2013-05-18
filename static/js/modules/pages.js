@@ -4,7 +4,7 @@
   
   // Welcome page
   Pages.WelcomePage = Backbone.View.extend({
-   el: 'body',
+   el: '#main-container',
 
    render: function(){
      $(this.el).html(ich.welcomePage());
@@ -13,7 +13,7 @@
 
   // Explore page
   Pages.ExplorePage = Backbone.View.extend({
-    el: 'body',
+    el: '#main-container',
 
     render: function(){
       $(this.el).html(ich.explorePage());
@@ -22,7 +22,7 @@
 
   // Phone page
   Pages.PhonePage = Backbone.View.extend({
-     el: 'body',
+     el: '#main-container',
 
      render: function(){
        $(this.el).html(ich.phonePage());
