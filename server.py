@@ -89,7 +89,7 @@ class LoginHandler(tornado.web.RequestHandler):
     enc = CustomEncoder();
     user['recipes'] = fetchById(db.recipes, user['recipes'])
     user['watches'] = fetchById(db.recipes, user['watches'])
-    user['comments'] = fetchById(db.comments, user['comments'])
+    user['comments'] = fetchbyid(db.comments, user['comments'])
     self.finish(enc.encode(user));
   
   def set_current_user(self, user):
@@ -151,7 +151,8 @@ class RecipeHandler(tornado.web.RequestHandler):
     if recipe:
       self.content_type = 'application/json'
       enc = CustomEncoder()
-      recipe["ts"] = int(_r["datetime"].strftime("%s"))
+      recipes['comments'] = fetchById(db.papers, recipes['comments'][:10]);
+      recipe["ts"] = int(recipe["created_datetime"].strftime("%s"))
 
       self.finish(enc.encode(recipe))
     else:
@@ -269,6 +270,7 @@ class PaperHandler(tornado.web.RequestHandler):
 
     paper = papers.find_one({'_id': _id})
     if paper:
+      paper['comments'] = fetchById(db.papers, paper['comments'][:10]);
       self.content_type = 'application/json'
       enc = CustomEncoder()
       

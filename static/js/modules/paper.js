@@ -1,6 +1,7 @@
 (function(pepper, Paper) {
  
  var Common = pepper.module('common');
+ var Comment = pepper.module('comment');
  
  
  // Shorthands 
@@ -81,6 +82,14 @@
       };
       
       
+      comments = new Comment.List(this.model.get('comments'));
+      
+      cv = new Comment.ListView({
+        tagName: "div",
+        id: "comment-list",
+        collection: comments
+      })
+      
       data = {
         title: this.model.get('title'),
         source: this.model.get('source').title,
@@ -91,6 +100,8 @@
       
       $(".authors", this.el).html(authors_html);
       $(this.el).attr('paper_id', this.model.get('_id'));
+      $('.comment-list-wrapper', this.el).html(cv.render().el);
+      
     }
   });
   
