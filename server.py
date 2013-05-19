@@ -89,7 +89,7 @@ class LoginHandler(tornado.web.RequestHandler):
     enc = CustomEncoder();
     user['recipes'] = fetchById(db.recipes, user['recipes'])
     user['watches'] = fetchById(db.recipes, user['watches'])
-    user['comments'] = fetchbyid(db.comments, user['comments'])
+    user['comments'] = fetchById(db.comments, user['comments'])
     self.finish(enc.encode(user));
   
   def set_current_user(self, user):
