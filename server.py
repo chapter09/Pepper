@@ -158,8 +158,9 @@ class RecipeHandler(tornado.web.RequestHandler):
     if recipe:
       self.content_type = 'application/json'
       enc = CustomEncoder()
-      recipes['comments'] = fetchById(db.papers, recipes['comments'][:10]);
-      recipe["ts"] = int(recipe["created_datetime"].strftime("%s"))
+      recipe['_comments'] = fetchById(db.comments, recipe['comments'][:10]);
+      recipe['_papers'] = fetchById(db.papers, recipe['papers'][:10]);
+      recipe["ts"] = int(recipe["ceated_datetime"].strftime("%s"))
 
       self.finish(enc.encode(recipe))
     else:

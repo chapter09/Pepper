@@ -36,6 +36,7 @@ $(document).ready(function(){
   
   var pagesRouter = new (pepper.module("pages").Router)();
   var paperRouter = new (pepper.module('paper').Router)();
+  var recipeRouter = new (pepper.module('recipe').Router)();
   var userRouter = new (pepper.module('user').Router)();
   
   Backbone.history.start();
