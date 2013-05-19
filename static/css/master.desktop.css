@@ -270,7 +270,7 @@ body {
 }
 
 #footer {
-  position: fixed;
+  position: static;
   bottom: 0;
   width: 100%;
 }
@@ -323,6 +323,10 @@ body {
   padding-right: 10px;
 
 
+}
+
+#main-container {
+  min-height: 1000px;
 }
 
 #main-container .user-info #recipes-count {
@@ -449,8 +453,9 @@ body {
 }
 
 #main-container .add_to_recipe_div {
-  text-align: center;
-  display: block;
+  height: 60px;
+  margin-left: 46%;
+  margin-right: 46%;
 }
 
 #main-container .add_to_recipe {
@@ -465,7 +470,53 @@ body {
   background-repeat: no-repeat;
 }
 
+#main-container .comment-wrapper .comment-list-wrapper {
+  width: 40%;
+  border: 1px solid #DFDFDF;
+  position: relative;
+  margin: 20px;
+  float: left;
+}
 
+#main-container .comment-wrapper .my-comment-list-wrapper {
+  width: 40%;
+  border: 1px solid #DFDFDF;
+  height: 40%;
+  float: right;
+  margin: 20px;
+}
+
+#main-container .comment-wrapper h4 {
+  background: #E5E5E5;
+  position: relative;
+  margin-top: 0;
+  padding: 5px;
+  
+}
+
+#main-container .comment-wrapper .common-list {
+    list-style-type:none;
+
+
+}
+
+#main-container .comment-wrapper .common-list li p {
+  margin: 0;
+}
+
+#main-container .comment-list-wrapper .content {
+  float: left;
+
+}
+
+#main-container .comment-list-wrapper .item-star {
+
+}
+
+#main-container .comment-list-wrapper .comment-list-item {
+  border-bottom: 1px solid #DFDFDF;
+  margin-top: 5px;
+}
 
 
 
