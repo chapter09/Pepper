@@ -64,15 +64,18 @@
   Recipe.Page = Backbone.View.extend({
     el: "#main-container",
     
+    initialize: function(){
+      _(this).bindAll('watch', 'fork');
+    },
+    
     render: function(){
-      
       data = {
         title: this.model.get('title'),
         description: this.model.get('description'),
         forks: this.model.get('forks').length,
         watches: this.model.get('watches').length,
         inwatch: (app.current_user && 
-            this.model.get('_id') in app.current_user.watches)
+            this.model.get('_id') in app.current_user.get('watches'))
       };
       
       _papers = this.model.get('_papers');
@@ -112,6 +115,53 @@
       $('.comment-list-wrapper', this.el).html(cv.render().el);
       
       
+    },
+    
+    watch: function(){
+      watch = this.model.get('watches');
+      _i = this.model.get('_id');
+      
+      if (app.current_user){
+          _w = app.current_user.get('watches');
+          
+        if (!_i in _w){
+          watch.push(app.current_user.get('_id'));
+          _w.push(_i);
+        
+        
+          this.model.set({watches: watch});
+          app.current_user.set({watches: _w});
+        
+        
+        
+          this.model.save({}, {success:function(){
+            console.log(1);
+            $('.watches-count').text(parseInt($('.watches-count').text())+1);
+            app.current_user.save();
+            }});
+        };
+      };
+    },
+    
+    fork: function(){
+      watch = this.model.get('forks');
+      _i = this.model.get('_id');
+      
+      if (app.current_user){
+        _w = app.current_user.get('recipes');
+        if (!_i in _w){
+          watch.push(app.current_user.get('_id'));
+          _w.push(_i);
+        
+          app.current_user.set('recipes', _w);
+          this.model.set('forks', watch);
+        
+          this.model.save({}, {success:function(){
+            $('.fork-count').text(parseInt($('.fork-count').text())+1);
+            app.current_user.save();
+            }});
+        };
+      }
     }
   });
   
