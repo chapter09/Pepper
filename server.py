@@ -15,6 +15,12 @@ connection=pymongo.Connection('202.120.38.9',27017)
 db = connection.pepper
 
 
+def gt(dt_str):
+  dt, _, us= dt_str.partition(".")
+  dt= datetime.datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S")
+  us= int(us.rstrip("Z"), 10)
+  return dt + datetime.timedelta(microseconds=us)
+
 class CustomEncoder(json.JSONEncoder):
     """A C{json.JSONEncoder} subclass to encode documents that have fields of
     type C{bson.objectid.ObjectId}, C{datetime.datetime}
@@ -87,9 +93,10 @@ class LoginHandler(tornado.web.RequestHandler):
     user = users.find_one({'name': un, 'password': pw})
     self.content_type = 'application/json'
     enc = CustomEncoder();
-    user['recipes'] = fetchById(db.recipes, user['recipes'])
-    user['watches'] = fetchById(db.recipes, user['watches'])
-    user['comments'] = fetchById(db.comments, user['comments'])
+    if user:
+      user['recipes'] = fetchById(db.recipes, user['recipes'])
+      user['watches'] = fetchById(db.recipes, user['watches'])
+      user['comments'] = fetchById(db.comments, user['comments'])
     self.finish(enc.encode(user));
   
   def set_current_user(self, user):
@@ -270,16 +277,45 @@ class PaperHandler(tornado.web.RequestHandler):
 
     paper = papers.find_one({'_id': _id})
     if paper:
-      paper['comments'] = fetchById(db.papers, paper['comments'][:10]);
+      paper['_comments'] = fetchById(db.comments, paper['comments'][:10]);
       self.content_type = 'application/json'
       enc = CustomEncoder()
       
       self.finish(enc.encode(paper))
     else:
       raise tornado.web.HTTPError(404)
+
+  def put(self, id):
+    data = json.loads(self.request.body)
+    comments = map(bson.ObjectId, data['comments'])
+    res = db.papers.update({'_id': bson.ObjectId(id)}, {'$set': {'comments': comments}})
+    return data
+ 
       
 
 class CommentsCollectionHandler(tornado.web.RequestHandler):
+  def post(self):
+    data = json.loads(self.request.body)
+    un = data['user']
+    content = data['content']
+    datetime = gt(data['created_datetime'])
+    stars = data['stars']
+
+    _c = {
+      'user': un,
+      'content': content,
+      'created_datetime': datetime,
+      'stars': stars,
+    }
+    cid = db.comments.insert(_c)
+    print cid
+    _c['_id'] = cid
+
+    enc = CustomEncoder()
+    self.content_type = 'application/json'
+    self.finish(enc.encode(_c))
+
+
   def get(self):
     comments = db.comments
     gt = int(self.get_argument("gt", "0"))
