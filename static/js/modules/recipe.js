@@ -17,6 +17,11 @@
   // Define a friend list
   Recipe.List = Backbone.Collection.extend({
     model: Recipe.Model,
+    url: '/recipes',
+    
+    initialize: function(){
+      this.inited = false;
+    },
     
     parse: function(data){
 		  return JSON.parse(data);

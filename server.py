@@ -82,7 +82,6 @@ class RegisterHandler(tornado.web.RequestHandler):
 class LoginHandler(tornado.web.RequestHandler):
   def get(self):
     users = db.users
-    print self.request
     un = self.get_argument('name', 'default')
     pw = self.get_argument('password', 'default')
     user = users.find_one({'name': un, 'password': pw})

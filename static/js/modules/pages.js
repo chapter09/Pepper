@@ -1,6 +1,8 @@
   (function(pepper, Pages) {
     
   var User = pepper.module("user");
+  var Recipe = pepper.module('recipe');
+  var Paper = pepper.module('paper');
   
   // Welcome page
   Pages.WelcomePage = Backbone.View.extend({
@@ -15,8 +17,15 @@
   Pages.ExplorePage = Backbone.View.extend({
     el: '#main-container',
 
+    initialize: function(){
+      this.recipe_all = new Recipe.List();
+      this.recipe_daily = new Recipe.List();
+      this.papers = new Paper.List();
+    },
+
     render: function(){
       $(this.el).html(ich.explorePage());
+      
     }
   });
 
