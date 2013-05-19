@@ -1,33 +1,30 @@
-<div class="">
-	<img src=""></img>
-	<h3 id="username"></h3>
-	<h2 id="user_intro"></h2>
+{% raw %}
+<div class="user-info">
+	<img src="{{ avatar_big }}" class="avatar avatar-img"></img>
+	<div class="user-name-wrapper wrapper">
+	  <h3 id="username">{{ name }}</h3>
+	  <h2 id="user_intro">{{ description }}</h2>
+	  <p id="joined_time">{{ joined_since }}</p>
+	</div>
 
-	<a href=""> </a>
-	<p id="joined_time"></p>
-	<a type=""></a>
-	<a type=""></a>
-	<a type=""></a>
+
+	<div id="recipes-count" class="plate plate-btn">配方： <span class="num">{{ recipes_count }}</span></div>
+	<div id="watches-count" class="plate plate-btn">关注： <span class="num">{{ watches_count }}</span></div>
+	<div id="comments-count" class="plate plate-btn">评论： <span class="num">{{ comments_count }}</span></div>
 </div>
 
-<div class="">
+<div class="content user-list-content">
 	<div class="row info-row">
-    <h2>网站介绍</h2>
-    <ul>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-    </ul>
+    <h2>我的配方</h2>
+    <div class="recipe-list-wrapper">
+    </div>
   </div>
   
   <div class="row info-row">
-    <h2>实用方式</h2>
-    <ul>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-      <li>barabarabara...</li>
-    </ul>
+    <h2>关注配方</h2>
+    <div class="watch-list-wrapper">
+    </div>
   </div>
 </div>
+
+{% endraw %}

@@ -1,0 +1,34 @@
+{% raw %}
+<div class="paper-wrapper">
+  <div class="icon paper-icon"></div>
+  <div class="title paper-title">{{ title }}</div>
+  <div class="detail-wrapper">
+    <ul class="authors">
+      {{ authors }}
+    </ul>
+    
+    <p class="source"> {{ source }}, {{ year }}</p>
+  </div>
+  
+  <div class="action-wrapper">
+    <ul class="action paper-action">
+      <li class="abstract">获取摘要</li>
+      <li class="cites">引用次数 <span class="cite-count"></span></li>
+    </ul>
+    
+    <div class="abstract-content"></div>
+  </div>
+  
+  
+  <a href="#add_to_recipe">加入配方</a>
+</div>
+
+
+<div class="comment-wrapper">
+  <div class="comment-list-wrapper">
+  </div>
+  
+  <div class="my-comment-list">
+  </div>
+<div>
+{% endraw %}
