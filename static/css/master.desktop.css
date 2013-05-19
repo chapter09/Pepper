@@ -277,7 +277,7 @@ body {
 
 #nameplate {
   padding-left: 80%;
-  position: fixed;
+  position: absolute;
   top: 25px;
 }
 
@@ -422,6 +422,49 @@ body {
   margin: 0px;
   font-size: 13px;
 }
+
+#main-container {
+
+}
+
+
+#main-container .paper-wrapper {
+  text-align: center;
+  border: 1px solid gray;
+  margin: 20px;
+  padding: 10px;
+}
+
+#main-container .detail-wrapper {
+}
+
+#main-container .detail-wrapper ul {
+  list-style-type: none;
+}
+
+#main-container .action-wrapper ul {
+  list-style-type: none;
+  display: inline;
+  font-size: 13px;
+}
+
+#main-container .add_to_recipe_div {
+  text-align: center;
+  display: block;
+}
+
+#main-container .add_to_recipe {
+  background-image: url('/img/box_bg.png');
+  position: absolute;
+  display: block;
+  padding: 17px 43px 43px 23px;
+  color: white;
+  font-size: 20px;
+  font-family: serif;
+  text-decoration: none;
+  background-repeat: no-repeat;
+}
+
 
 
 
