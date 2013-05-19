@@ -82,13 +82,15 @@
       };
       
       
-      comments = new Comment.List(this.model.get('comments'));
+      comments = new Comment.List(this.model.get('_comments'));
       
       cv = new Comment.ListView({
         tagName: "div",
         id: "comment-list",
         collection: comments
-      })
+      });
+      
+      
       
       data = {
         title: this.model.get('title'),
@@ -100,6 +102,14 @@
       
       $(".authors", this.el).html(authors_html);
       $(this.el).attr('paper_id', this.model.get('_id'));
+      
+      cw = new Comment.InputView({
+        modelObject: this.model,
+        collection: comments,
+        el: '.my-comment-list',
+      });
+      
+      cw.render();
       $('.comment-list-wrapper', this.el).html(cv.render().el);
       
     }
