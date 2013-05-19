@@ -48,7 +48,7 @@
   User.View = Backbone.View.extend({
     el: '#main-container',
     initialize: function() {
-      this.recipes = new Recipe.List(this.model.get('recipes'));
+      this.recipes = new Recipe.List(this.model.get('_recipes'));
       this.recipes.total_page = this.model.get('recipes').length;
       this.recipesView = new Recipe.ListView({
         tagName: "div",
@@ -57,7 +57,7 @@
       });
       
       
-      this.watches = new Recipe.List(this.model.get('watches'));
+      this.watches = new Recipe.List(this.model.get('_watches'));
       this.watches.total_page = this.model.get('watches').length;
       this.watchesView = new Recipe.ListView({
         tagName: "div",
@@ -126,6 +126,8 @@
         user_view_page = new User.View({
           model: model
         });
+        
+        app.current_user = model;
 
         $('#loading-animation').hide();
         user_view_page.render();

@@ -14,16 +14,14 @@
     
     dataAdapter: function(){
       authors = this.get('author');
-      authors_html = "";
+      _a = []
       for (var i=0; i < authors.length; i++) {
-        authors_html += "<li>"+authors[i]+"</li>";
+        _a.push({name: authors[i]});
       };
-      
-      authors_html = $('<ul>').html(authors_html).addClass('authors');
       
 		  return {
 		    'item_title': this.get('title'),
-		    'item_authors': authors_html,
+		    'item_authors': _a,
 		    'stars': this.get('stars')
 		  };
 		}
