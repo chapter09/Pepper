@@ -1,0 +1,38 @@
+{% raw %}
+<div class="recipe-wrapper">
+  <div class="title recipe-title">{{ title }}</div>
+  <div class="detail-wrapper">
+    <p>{{ description }}</p>
+  </div>
+  
+  <div class="action-wrapper">
+    <ul class="action paper-action">
+      <li class="fork">Fork <span class="fork-count">{{ forks }}</span></li>
+      <li class="watch in-{{ inwatch }}">watches <span class="watches-count">{{ watches }}</span></li>
+    </ul>
+  </div>
+  
+</div>
+
+<div class="paper-list-wrapper">
+  <h2>文章列表</h2>
+  <div id="paper-list">
+  </div>
+</div>
+
+
+<div class="comment-wrapper">
+  <div class="comment-list-wrapper">
+  </div>
+  
+  <div class="my-comment-list-wrapper">
+    <div class="title">
+      <h4>我的评论</h4>
+    </div>
+    
+    <div class="my-comment-list">
+    </div>
+  </div>
+<div>
+  
+{% endraw %}
