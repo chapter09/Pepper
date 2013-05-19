@@ -1,6 +1,8 @@
   (function(pepper, Pages) {
     
   var User = pepper.module("user");
+  var Recipe = pepper.module('recipe');
+  var Paper = pepper.module('paper');
   
   // Welcome page
   Pages.WelcomePage = Backbone.View.extend({
@@ -15,8 +17,15 @@
   Pages.ExplorePage = Backbone.View.extend({
     el: '#main-container',
 
+    initialize: function(){
+      this.recipe_all = new Recipe.List();
+      this.recipe_daily = new Recipe.List();
+      this.papers = new Paper.List();
+    },
+
     render: function(){
       $(this.el).html(ich.explorePage());
+      
     }
   });
 
@@ -29,19 +38,6 @@
      }
    });
 
-  // Navigator widget
-  Pages.NavigatorWidget = Backbone.View.extend({
-    el: '#navigator',
-    _renderd: false,
-    
-    render: function(){
-      if (!this._renderd){
-        this._renderd = true;
-        $(this.el).html(ich.navigatorWidget());
-      }
-    }
-  });
-
   // Shorthands 
   // The application container
   var app = pepper.app;
@@ -52,8 +48,8 @@
       this.welcomePage = new Pages.WelcomePage();
       this.explorePage = new Pages.ExplorePage();
       this.phonePage = new  Pages.PhonePage ();
-      this.navigatorWidet = new Pages.NavigatorWidget();
-      this.nameplateWidget = new User.NameplateWidget();
+      
+      app.widgets.push(new User.NameplateWidget());
     },
 
     routes: {
@@ -63,20 +59,17 @@
     },
 
     index: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.welcomePage.render();
     },
 
     explore: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.explorePage.render();
     },
 
     phone: function(){
-      this.navigatorWidet.render();
-      this.nameplateWidget.render();
+      app.render_widgets();
       this.phonePage.render();
     }
   });

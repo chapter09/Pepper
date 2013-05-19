@@ -36,6 +36,16 @@ def mobileDetecotr(req):
   return b or v
 
 
+
+def fetchById(collection, ids):
+  res = []
+  for id in ids:
+    _r = collection.find_one({'_id': id})
+    if _r:
+      res.append(_r)
+  return res
+
+
 class MainHandler(tornado.web.RequestHandler):
   def get(self): 
     env = Environment(loader=FileSystemLoader('templates'))
@@ -70,22 +80,17 @@ class RegisterHandler(tornado.web.RequestHandler):
 
 
 class LoginHandler(tornado.web.RequestHandler):
-  def post(self):
+  def get(self):
     users = db.users
-    un = self.get_argument('un', 'default')
-    pw = self.get_argument('pw', 'default')
-    user = users.find_one({'un': un})
-    if user:
-      if password == user['pw']:
-        self.set_current_user(un)
-        self.redirect(self.get_argument('next', u"/"))
-      else:
-        raise tornado.web.HTTPError(400)
-        self.redirect(u"/register")
-    else:
-      raise tornado.web.HTTPError(400)
-      self.redirect(u"/register")
-
+    un = self.get_argument('name', 'default')
+    pw = self.get_argument('password', 'default')
+    user = users.find_one({'name': un, 'password': pw})
+    self.content_type = 'application/json'
+    enc = CustomEncoder();
+    user['recipes'] = fetchById(db.recipes, user['recipes'])
+    user['watches'] = fetchById(db.recipes, user['watches'])
+    user['comments'] = fetchbyid(db.comments, user['comments'])
+    self.finish(enc.encode(user));
   
   def set_current_user(self, user):
     if user:
@@ -120,7 +125,7 @@ class RecipesCollectionHandler(tornado.web.RequestHandler):
     enc = CustomEncoder()
     _rs = []
     for _r in _recipes:
-      _r["ts"] = int(_r["datetime"].strftime("%s"))
+      _r["ts"] = int(_r["ceated_datetime"].strftime("%s"))
       _rs.append(_r)
      
     if order=="desc": _rs.reverse()
@@ -146,7 +151,8 @@ class RecipeHandler(tornado.web.RequestHandler):
     if recipe:
       self.content_type = 'application/json'
       enc = CustomEncoder()
-      recipe["ts"] = int(_r["datetime"].strftime("%s"))
+      recipes['comments'] = fetchById(db.papers, recipes['comments'][:10]);
+      recipe["ts"] = int(recipe["created_datetime"].strftime("%s"))
 
       self.finish(enc.encode(recipe))
     else:
@@ -218,6 +224,10 @@ class UserHandler(tornado.web.RequestHandler):
     if user:
       self.content_type = 'application/json'
       enc = CustomEncoder()
+      user['recipes'] = fetchById(db.recipes, user['recipes'])
+      user['watches'] = fetchById(db.recipes, user['watches'])
+      user['comments'] = fetchById(db.comments, user['comments'])
+    
       self.finish(enc.encode(user))
     else:
       raise tornado.web.HTTPError(404)
@@ -260,6 +270,7 @@ class PaperHandler(tornado.web.RequestHandler):
 
     paper = papers.find_one({'_id': _id})
     if paper:
+      paper['comments'] = fetchById(db.papers, paper['comments'][:10]);
       self.content_type = 'application/json'
       enc = CustomEncoder()
       
@@ -479,11 +490,11 @@ settings = {
 
 application = tornado.web.Application([
     (r"/", MainHandler),
-    (r"/register", RegisterHandler),
-    (r"/login", LoginHandler),
+    (r"/register", RegisterHandler), 
+    (r"/users/(\w+)", UserHandler),
+    (r"/users", LoginHandler),
     (r"/recipes", RecipesCollectionHandler),
     (r"/recipes/(\w+)", RecipeHandler),
-    (r"/users/(\w+)", UserHandler),
     (r"/authors/(\w+)", AuthorHandler),
     (r"/comments", CommentsCollectionHandler),
     (r"/comments/(\w+)", CommentHandler),
