@@ -94,9 +94,9 @@ class LoginHandler(tornado.web.RequestHandler):
     self.content_type = 'application/json'
     enc = CustomEncoder();
     if user:
-      user['recipes'] = fetchById(db.recipes, user['recipes'])
-      user['watches'] = fetchById(db.recipes, user['watches'])
-      user['comments'] = fetchById(db.comments, user['comments'])
+      user['_recipes'] = fetchById(db.recipes, user['recipes'])
+      user['_watches'] = fetchById(db.recipes, user['watches'])
+      user['_comments'] = fetchById(db.comments, user['comments'])
     self.finish(enc.encode(user));
   
   def set_current_user(self, user):
@@ -194,6 +194,18 @@ class RecipeHandler(tornado.web.RequestHandler):
       if not _id:
         raise tornado.web.HTTPError(400)
 
+  def put(self, id):
+    data = json.loads(self.request.body)
+  
+    db.recipes.update({'_id': bson.ObjectId(id)},
+                      { '$set': {'watches': data['watches'],
+                       'forks': data['forks'],
+                       'comments': data['comments'],
+                       }})
+
+    self.content_type = 'application/json'
+    self.finish(json.dumps(data))  
+
 
   def delete(self, id):
     recipes = db.recipes
@@ -232,13 +244,23 @@ class UserHandler(tornado.web.RequestHandler):
     if user:
       self.content_type = 'application/json'
       enc = CustomEncoder()
-      user['recipes'] = fetchById(db.recipes, user['recipes'])
-      user['watches'] = fetchById(db.recipes, user['watches'])
-      user['comments'] = fetchById(db.comments, user['comments'])
+      user['_recipes'] = fetchById(db.recipes, user['recipes'])
+      user['_watches'] = fetchById(db.recipes, user['watches'])
+      user['_comments'] = fetchById(db.comments, user['comments'])
     
       self.finish(enc.encode(user))
     else:
       raise tornado.web.HTTPError(404)
+
+  def put(self, id):
+    data = json.loads(self.request.body)
+    db.users.update({'_id': bson.ObjectId(id)},
+                    {'$set': {
+                        'watches': data['watches'],
+                        'recipes': data['recipes'],
+                        'comments': data['comments']}})
+    self.content_type = 'application/json'
+    return self.request.body    
 
 #author["_id"]: author id
 #author["pl"]: author papers list

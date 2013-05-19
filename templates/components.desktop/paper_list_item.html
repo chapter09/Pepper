@@ -2,7 +2,11 @@
 <div class="common-list-item">
 	<div class="info item-info">
 		<h3>{{ item_title }}</h3>
-		{{ item_authors }}
+		<ul class="authors-list">
+	  {{#item_authors}}
+	    <li>{{ name }}</li>
+	  {{/item_authors}}
+		</ul>
 	</div>
 	<div class="star item-star">
 		<p>{{ star }}</p>
